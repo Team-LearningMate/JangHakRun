@@ -5,7 +5,7 @@ PR 이름 컨벤션
 
 ## 📌 관련 이슈
 
-- closed #issueNum
+- close #issueNum
 
 ## ✨ PR 세부 내용
 
