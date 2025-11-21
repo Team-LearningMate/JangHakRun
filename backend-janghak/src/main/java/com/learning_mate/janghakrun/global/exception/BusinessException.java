@@ -1,5 +1,6 @@
-package com.learning_mate.janghakrun.global.error;
+package com.learning_mate.janghakrun.global.exception;
 
+import com.learning_mate.janghakrun.global.error.ErrorCode;
 import lombok.Getter;
 
 @Getter
