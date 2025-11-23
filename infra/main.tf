@@ -61,3 +61,40 @@ resource "aws_internet_gateway" "internetGateway" {
     Name = "JanghakRun_IGW"
   }
 }
+
+resource "aws_route_table" "publicRouteTable" {
+  vpc_id = aws_vpc.JanghakRun.id
+
+  tags = {
+    Name = "JanghakRun_public_RT"
+  }
+}
+
+resource "aws_route" "defaultRoute" {
+  route_table_id         = aws_route_table.publicRouteTable.id
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id             = aws_internet_gateway.internetGateway.id
+}
+
+resource "aws_route_table_association" "proxySubnetAssociation" {
+  subnet_id      = aws_subnet.proxySubnet.id
+  route_table_id = aws_route_table.publicRouteTable.id
+}
+
+resource "aws_route_table" "privateRouteTable" {
+  vpc_id = aws_vpc.JanghakRun.id
+
+  tags = {
+    Name = "JanghakRun_private_RT"
+  }
+}
+
+resource "aws_route_table_association" "wasSubnetAssociation" {
+  subnet_id      = aws_subnet.wasSubnet.id
+  route_table_id = aws_route_table.privateRouteTable.id
+}
+
+resource "aws_route_table_association" "dbSubnetAssociation" {
+  subnet_id      = aws_subnet.dbSubnet.id
+  route_table_id = aws_route_table.privateRouteTable.id
+}
