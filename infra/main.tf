@@ -53,3 +53,11 @@ resource "aws_subnet" "dbSubnet" {
     Name = "dbSubnet"
   }
 }
+
+resource "aws_internet_gateway" "internetGateway" {
+  vpc_id = aws_vpc.JanghakRun.id
+
+  tags = {
+    Name = "JanghakRun_IGW"
+  }
+}
