@@ -113,6 +113,13 @@ resource "aws_security_group" "publicSg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  ingress {
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
+    self      = true
+  }
+
   tags = {
     Name = "JanghakRun_Public_SG"
   }
@@ -142,6 +149,13 @@ resource "aws_security_group" "privateSg" {
     to_port         = 22
     protocol        = "tcp"
     security_groups = [aws_security_group.publicSg.id]
+  }
+
+  ingress {
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
+    self      = true
   }
 
   egress {
