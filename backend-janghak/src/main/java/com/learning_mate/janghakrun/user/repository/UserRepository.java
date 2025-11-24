@@ -1,4 +1,4 @@
-package com.learning_mate.janghakrun.user.Repository;
+package com.learning_mate.janghakrun.user.repository;
 
 import com.learning_mate.janghakrun.user.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;

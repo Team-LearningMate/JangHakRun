@@ -64,7 +64,7 @@ public class JwtTokenProvider {
      * @param token
      * @return 추출된 userId
      */
-    public Long getUserID(String token) {
+    public Long getUserId(String token) {
         Claims claims = parseClaims(token);
         return Long.parseLong(claims.getSubject());
     }

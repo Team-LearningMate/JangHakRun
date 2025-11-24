@@ -1,5 +1,7 @@
 package com.learning_mate.janghakrun.security.jwt;
 
+import com.learning_mate.janghakrun.security.CustomUserDetails;
+import com.learning_mate.janghakrun.security.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,6 +19,7 @@ import java.util.Collections;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final CustomUserDetailsService customUserDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -47,11 +50,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      * Jwt 추출 -> Authentication 객체로 변환
      */
     private Authentication getAuthentication(String token) {
-        Long userId = jwtTokenProvider.getUserID(token);
+        Long userId = jwtTokenProvider.getUserId(token);
 
-        // TODO: CustomDetailsService 작성 후 UserDetails로 조회 교체
+        CustomUserDetails userDetails =
+                (CustomUserDetails) customUserDetailsService.loadUserByUsername(String.valueOf(userId));
+
         return new UsernamePasswordAuthenticationToken(
-                userId, null, Collections.emptyList()
+                userDetails, null, userDetails.getAuthorities()
         );
     }
 }
