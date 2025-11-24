@@ -5,7 +5,7 @@ package com.learning_mate.janghakrun.auth.request;
  * 요청 필드 변경될 수 있음
  */
 public record LoginRequest(
-        String id,
+        String email,
         String password
 ) {
 }
