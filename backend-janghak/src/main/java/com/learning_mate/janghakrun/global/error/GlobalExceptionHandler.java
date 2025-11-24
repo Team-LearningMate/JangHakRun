@@ -20,11 +20,11 @@ public class GlobalExceptionHandler {
 
     // 그 외 예외 처리
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleException(BusinessException e) {
-        ErrorCode errorCode = e.getErrorCode();
+    public ResponseEntity<ErrorResponse> handleException(Exception e) {
+        ErrorCode errorCode = ErrorCode.INTERNAL_SERVER_ERROR;
 
         return ResponseEntity
-                .status(errorCode.getHttpStatus())
+                .status(ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus())
                 .body(ErrorResponse.of(errorCode));
     }
 
