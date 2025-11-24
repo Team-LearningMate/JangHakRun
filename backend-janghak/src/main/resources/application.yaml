@@ -4,4 +4,4 @@ spring:
 
 jwt:
   secret: ${jwt.secret}
-  access-token-validity-in-seconds: 86400 #24h
+  access-token-validity-in-seconds: 2592000 #30일
