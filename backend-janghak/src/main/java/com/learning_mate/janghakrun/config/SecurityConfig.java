@@ -1,5 +1,10 @@
     package com.learning_mate.janghakrun.config;
 
+    import com.fasterxml.jackson.databind.ObjectMapper;
+    import com.learning_mate.janghakrun.auth.oauth.CustomOAuth2UserService;
+    import com.learning_mate.janghakrun.auth.oauth.OAuth2LoginSuccessHandler;
+    import com.learning_mate.janghakrun.global.error.ErrorCode;
+    import com.learning_mate.janghakrun.global.error.ErrorResponse;
     import com.learning_mate.janghakrun.security.CustomUserDetails;
     import com.learning_mate.janghakrun.security.CustomUserDetailsService;
     import com.learning_mate.janghakrun.security.jwt.JwtAuthenticationFilter;
@@ -22,6 +27,9 @@
 
         private final JwtTokenProvider jwtTokenProvider;
         private final CustomUserDetailsService customUserDetailsService;
+        private final CustomOAuth2UserService customOAuth2UserService;
+        private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+        private final ObjectMapper objectMapper;
 
         @Bean
         public JwtAuthenticationFilter jwtAuthenticationFilter() {
@@ -49,12 +57,33 @@
                                     "/v3/api-docs/**",
                                     "/v3/api-docs.yaml",
 
-                                    "/auth/login"
+                                    "/api/v1/auth/login",
+                                    "/oauth2/**",           // oauth 로그인
+                                    "/login/oauth2/**"      // oauth callback
                             ).permitAll()
 
                             .anyRequest().authenticated()
                     )
                     .userDetailsService(customUserDetailsService)
+
+                    // oauth 설정
+                    .oauth2Login(oauth -> oauth
+                                    .userInfoEndpoint(userInfo -> userInfo
+                                    .userService(customOAuth2UserService)
+                                    )
+                                    .successHandler(oAuth2LoginSuccessHandler)
+                            )
+
+                    // 로그인이 필요한 페이지로 이동할 시 Error 반환
+                    .exceptionHandling(e -> e
+                            .authenticationEntryPoint((request, response, authException) -> {
+                                ErrorResponse body = ErrorResponse.of(ErrorCode.AUTH_UNAUTHORIZED);
+
+                                response.setStatus(body.httpStatus());
+                                response.setContentType("application/json;charset=UTF-8");
+                                response.getWriter().write(objectMapper.writeValueAsString(body));
+                            })
+                    )
 
                     .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
             ;
